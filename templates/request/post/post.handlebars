@@ -41,9 +41,9 @@
       },
         {{/is}}
         {{#is contentType 'multipart/form-data'}}
-        form: {
+        formData: {
           {{#each formParameters}}
-          {{this.name}}: 'DATA GOES HERE'{{#unless @last}},{{/unless}}
+          {{this.name}}: {{requestDataParamFormatter this.name this.type ../formParams}}{{#unless @last}},{{/unless}}
           {{/each}}
         }
       },
@@ -140,9 +140,9 @@
           },
             {{/is}}
             {{#is contentType 'multipart/form-data'}}
-            form: {
+            formData: {
               {{#each formParameters}}
-              {{this.name}}: 'DATA GOES HERE'{{#unless @last}},{{/unless}}
+              {{this.name}}: {{requestDataParamFormatter this.name this.type ../formParams}}{{#unless @last}},{{/unless}}
               {{/each}}
             }
           },

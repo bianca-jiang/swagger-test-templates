@@ -204,10 +204,11 @@ function getData(swagger, apiPath, operation, response, config, info) {
     config.requestData[apiPath] &&
     config.requestData[apiPath][operation] &&
     config.requestData[apiPath][operation][response]) {
+
     data.requestData = config.requestData[apiPath][operation][response];
+
     // if we have requestData, fill the path params accordingly
     var mockParameters = {};
-
     data.pathParameters.forEach(function(parameter) {
       // find the mock data for this parameter name
       mockParameters[parameter.name] = data.requestData.filter(function(mock) {
@@ -219,6 +220,23 @@ function getData(swagger, apiPath, operation, response, config, info) {
     if (!config.pathParams) {
       data.pathParams = mockParameters;
     }
+
+    //if requestData has value for any formParameters by name, fill in formParams
+    data.formParams = {};
+    data.formParameters.forEach(function(formP) {
+      var formData = data.requestData.filter(function(data) {
+        return data.hasOwnProperty(formP.name);
+      });
+      if(formData && formData.length === 1) {
+        var formParamValue = formData[0][formP.name];
+        if(formP.type === 'file') {
+          info.importFS = true;
+          formParamValue = 'fs.createReadStream("' + formParamValue + '")';
+        }
+        data.formParams[formP.name] = formParamValue;
+      }
+    });
+
   }
   return data;
 }
@@ -406,6 +424,7 @@ function testGenPath(swagger, apiPath, config) {
     importValidator: false,
     importEnv: false,
     importArete: false,
+    importFS: false,
     consumes: [],
     produces: [],
     security: [],
@@ -439,7 +458,8 @@ function testGenPath(swagger, apiPath, config) {
     tests: result,
     importValidator: info.importValidator,
     importEnv: info.importEnv,
-    importArete: info.importArete
+    importArete: info.importArete,
+    importFS: info.importFS
   };
 
   if (!allDeprecated) {

@@ -25,6 +25,9 @@ var assert = chai.assert;
 {{#if importArete}}
 var arete = require('arete');
 {{/if}}
+{{#if importFS}}
+var fs = require('fs');
+{{/if}}
 {{#if importEnv}}
 
 require('dotenv').load();
