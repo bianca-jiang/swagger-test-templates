@@ -81,7 +81,8 @@ function getData(swagger, apiPath, operation, response, config, info) {
     loadName: '',
     requests: 0,
     concurrent: 0,
-    pathParams: {}
+    pathParams: {},
+    formParams: {}
   };
 
   // get pathParams from config
